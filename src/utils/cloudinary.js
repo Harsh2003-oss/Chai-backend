@@ -2,6 +2,8 @@ const { v2 : cloudinary } = require('cloudinary');
 const { isFileLoadingAllowed } = require('vite');
 
 
+
+//below three you can get form cloudilary ofificial webpage
     // Configuration
     cloudinary.config({ 
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
@@ -9,6 +11,8 @@ const { isFileLoadingAllowed } = require('vite');
         api_secret:process.env.CLOUDINARY_API_SECRET  // Click 'View API Keys' above to copy your API secret
     });
     
+
+    //Below codes are reusable ...
     const uploadOnCloudinary = async (localfilePath) => {
 
         try {

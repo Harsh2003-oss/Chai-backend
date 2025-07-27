@@ -51,6 +51,10 @@ const userSchema = mongoose.Schema(
 )
 
 //Mongoose hook or middleware. It runs automatically before a document is saved to the database.
+
+//This is the sametemplate for all User Authentication & Security
+
+// Hash password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next()
 
@@ -58,6 +62,7 @@ userSchema.pre("save", async function (next) {
   next()
 })
 
+// Compare password method
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password)
 }

@@ -1,6 +1,6 @@
 const { v2 : cloudinary } = require('cloudinary');
 const { isFileLoadingAllowed } = require('vite');
-
+const fs = require('fs')
 
 
 //below three you can get form cloudilary ofificial webpage
@@ -23,9 +23,9 @@ const { isFileLoadingAllowed } = require('vite');
                 resource_type:"auto"
             })
             //File has been uploaded successfully
-            console.log("file is uploaded on cloudinary",
-            response.url);
-            return response;
+           // console.log("file is uploaded on cloudinary",  response.url);
+          fs.unlinkSync(localfilePath)
+           return response;
             
         } catch (error) {
             fs.unlinkSync(localfilePath) //remove the locally saved

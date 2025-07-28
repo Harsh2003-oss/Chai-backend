@@ -20,19 +20,23 @@ const registerUser = asyncHandler( async (req,res)=>{
 
 
 const {fullName,email,username,password} = req.body
-console.log("email: ", email);
 
+//console.log("email: ", email);
+
+//validation
 if(
     [fullName,username,email,password].some((field)=> //generally some is used to return boolean values
-    field?.trim()=== "") //Here if field is present then trim it otherwise if it is empty the throw error
+    field?.trim()=== "") //Here if field is present then trim it otherwise if it is empty then throw error
 ){
     throw new ApiError(400,"All fields are required")
 }
 
 //Here we imported user form usermodel it will connect to database through mongoose
-const existedUser = User.findOne({
+const existedUser = await User.findOne({
     $or: [{ username } , { email }] //This is a MongoDB operator that means "OR" - it will find a user if EITHER condition is true
 })
+
+
 if(existedUser){
     throw new ApiError(409,"User with email or username already exists")
 }
@@ -43,18 +47,24 @@ const avatarLocalPath = req.files?.avatar[0]?.path;
 // [0] - Get the first file (since avatar might have multiple files, we want the first one)
 // ?.path - Safely get the path where the file is stored on the server
 
-const coverImageLocalPath = req.files?.coverImage[0].path;
  
 if(!avatarLocalPath){
     throw new ApiError(400,"Avataar file is required")
 }
 
- const avatar =await uploadOnCloudinary{avatarLocalPath}
- const coverImage = await uploadOnCloudinary{coverImageLocalPath}
+const avatar =await uploadOnCloudinary(avatarLocalPath)
+if(!avatar){
+    throw new ApiError(400,"Avataar file is required")
+}
 
- if(!avatar){
-    throw new ApiError(400, "Avatar file is requird")
- }
+
+let coverImage = null;
+const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+
+
+if(coverImageLocalPath){
+    coverImage = await uploadOnCloudinary(coverImageLocalPath);
+}
 
  //Here we are creating user wiith these fields
 const user = await User.create({
